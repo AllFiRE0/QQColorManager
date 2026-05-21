@@ -13,6 +13,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ClearCommand {
+    
     private final QQColorManager plugin;
 
     public ClearCommand(QQColorManager plugin) {
@@ -20,7 +21,6 @@ public class ClearCommand {
     }
 
     public void execute(CommandSender sender, String[] args) {
-        // /qqcm clear [player] [-s]
         String playerName = null;
         boolean silent = false;
 
@@ -32,12 +32,10 @@ public class ClearCommand {
             }
         }
 
-        // Check permissions
         UUID targetUuid;
         String targetName;
 
         if (playerName == null) {
-            // Clear self
             if (!(sender instanceof Player)) {
                 sender.sendMessage("Console must specify a player");
                 return;
@@ -50,7 +48,6 @@ public class ClearCommand {
             targetUuid = p.getUniqueId();
             targetName = p.getName();
         } else {
-            // Clear other
             if (!sender.hasPermission("qqcm.clear.other")) {
                 MessageUtil.send(sender, plugin.getConfigManager().getMessage("no_permission"), silent);
                 return;
@@ -64,13 +61,11 @@ public class ClearCommand {
             targetName = target.getName() != null ? target.getName() : playerName;
         }
 
-        // Check if has any data
         if (!plugin.getStorage().hasAnyData(targetUuid)) {
             MessageUtil.send(sender, plugin.getConfigManager().getMessage("nothing_to_clear"), silent);
             return;
         }
 
-        // Clear all data
         plugin.getStorage().clearPlayer(targetUuid);
 
         if (!silent) {
@@ -82,10 +77,13 @@ public class ClearCommand {
     public List<String> tabComplete(CommandSender sender, String[] args) {
         if (args.length == 2 && sender.hasPermission("qqcm.clear.other")) {
             String input = args[1].toLowerCase();
-            return Bukkit.getOnlinePlayers().stream()
-                .map(Player::getName)
-                .filter(name -> name.toLowerCase().startsWith(input))
-                .collect(Collectors.toList());
+            List<String> players = new ArrayList<>();
+            for (Player online : Bukkit.getOnlinePlayers()) {
+                if (online.getName().toLowerCase().startsWith(input)) {
+                    players.add(online.getName());
+                }
+            }
+            return players;
         }
         return new ArrayList<>();
     }
