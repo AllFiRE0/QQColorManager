@@ -8,7 +8,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -38,6 +40,38 @@ public class QQCMExpansion extends PlaceholderExpansion {
     @Override
     public boolean persist() {
         return true;
+    }
+    
+    @Override
+    public boolean canRegister() {
+        return true;
+    }
+    
+    @Override
+    public @Nullable List<String> getPlaceholders() {
+        List<String> placeholders = new ArrayList<>();
+        
+        // Цвета
+        for (String id : plugin.getConfigManager().getColors().keySet()) {
+            TemplateConfig template = plugin.getConfigManager().getColor(id);
+            if (template != null) {
+                for (int slot = 1; slot <= template.getSlots(); slot++) {
+                    placeholders.add("%qqcm_color_" + id + "_" + slot + "_fallback%");
+                    placeholders.add("%qqcm_color_" + id + "_" + slot + "_&7%");
+                    placeholders.add("%qqcm_color_" + id + "_" + slot + "_&f%");
+                }
+            }
+        }
+        
+        // Градиенты
+        for (String id : plugin.getConfigManager().getGradients().keySet()) {
+            placeholders.add("%qqcm_gradient_" + id + "_start_fallback%");
+            placeholders.add("%qqcm_gradient_" + id + "_start_&7%");
+            placeholders.add("%qqcm_gradient_" + id + "_end_fallback%");
+            placeholders.add("%qqcm_gradient_" + id + "_end_&7%");
+        }
+        
+        return placeholders;
     }
 
     @Override
