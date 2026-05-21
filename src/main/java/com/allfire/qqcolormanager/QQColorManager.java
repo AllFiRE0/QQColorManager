@@ -22,7 +22,8 @@ public final class QQColorManager extends JavaPlugin {
         instance = this;
         
         saveDefaultConfig();
-        
+
+        MessageUtil.init(this);
         configManager = new ConfigManager(this);
         configManager.load();
         
