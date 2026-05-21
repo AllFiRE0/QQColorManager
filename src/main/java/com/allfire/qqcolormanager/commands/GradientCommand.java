@@ -10,11 +10,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class GradientCommand {
+    
     private final QQColorManager plugin;
 
     public GradientCommand(QQColorManager plugin) {
@@ -45,7 +47,6 @@ public class GradientCommand {
     }
 
     private void handleSet(CommandSender sender, String[] args) {
-        // /qqcm gradient set <id> <slot> <color> [player] [-s]
         if (args.length < 5) {
             MessageUtil.send(sender, "<red>Usage: /qqcm gradient set <id> <slot> <color> [player] [-s]");
             return;
@@ -72,7 +73,6 @@ public class GradientCommand {
             }
         }
 
-        // Check permissions
         if (playerName != null && !sender.hasPermission("qqcm.gradient.set.other")) {
             MessageUtil.send(sender, plugin.getConfigManager().getMessage("no_permission"), silent);
             return;
@@ -86,7 +86,6 @@ public class GradientCommand {
             return;
         }
 
-        // Get gradient config
         GradientConfig gradient = plugin.getConfigManager().getGradient(id);
         if (gradient == null) {
             MessageUtil.send(sender, plugin.getConfigManager().getMessage("template_not_found"), silent);
@@ -98,14 +97,12 @@ public class GradientCommand {
             return;
         }
 
-        // Parse color
         String hex = ColorUtil.extractHex(colorInput);
         if (hex == null) {
             MessageUtil.send(sender, plugin.getConfigManager().getMessage("invalid_color"), silent);
             return;
         }
 
-        // Validate with regex if present
         String regex = gradient.getInputRegex();
         if (regex != null && !Pattern.matches(regex, hex)) {
             MessageUtil.send(sender, plugin.getConfigManager().getMessage("invalid_regex")
@@ -113,7 +110,6 @@ public class GradientCommand {
             return;
         }
 
-        // Get target
         UUID targetUuid;
         String targetName;
         if (playerName == null) {
@@ -129,7 +125,6 @@ public class GradientCommand {
             targetName = target.getName() != null ? target.getName() : playerName;
         }
 
-        // Save gradient color
         plugin.getStorage().setGradientColor(targetUuid, targetName, id, slot, hex);
 
         if (!silent) {
@@ -140,7 +135,6 @@ public class GradientCommand {
     }
 
     private void handleGet(CommandSender sender, String[] args) {
-        // /qqcm gradient get <id> [player] [-s]
         if (args.length < 3) {
             MessageUtil.send(sender, "<red>Usage: /qqcm gradient get <id> [player] [-s]");
             return;
@@ -158,7 +152,6 @@ public class GradientCommand {
             }
         }
 
-        // Check permissions
         if (playerName != null && !sender.hasPermission("qqcm.gradient.get.other")) {
             MessageUtil.send(sender, plugin.getConfigManager().getMessage("no_permission"), silent);
             return;
@@ -172,14 +165,12 @@ public class GradientCommand {
             return;
         }
 
-        // Get gradient config
         GradientConfig gradient = plugin.getConfigManager().getGradient(id);
         if (gradient == null) {
             MessageUtil.send(sender, plugin.getConfigManager().getMessage("template_not_found"), silent);
             return;
         }
 
-        // Get target
         UUID targetUuid;
         if (playerName == null) {
             targetUuid = ((Player) sender).getUniqueId();
@@ -207,7 +198,6 @@ public class GradientCommand {
     }
 
     private void handleRemove(CommandSender sender, String[] args) {
-        // /qqcm gradient remove <id> [player] [-s]
         if (args.length < 3) {
             MessageUtil.send(sender, "<red>Usage: /qqcm gradient remove <id> [player] [-s]");
             return;
@@ -225,7 +215,6 @@ public class GradientCommand {
             }
         }
 
-        // Check permissions
         if (playerName != null && !sender.hasPermission("qqcm.gradient.remove.other")) {
             MessageUtil.send(sender, plugin.getConfigManager().getMessage("no_permission"), silent);
             return;
@@ -239,14 +228,12 @@ public class GradientCommand {
             return;
         }
 
-        // Get gradient config
         GradientConfig gradient = plugin.getConfigManager().getGradient(id);
         if (gradient == null) {
             MessageUtil.send(sender, plugin.getConfigManager().getMessage("template_not_found"), silent);
             return;
         }
 
-        // Get target
         UUID targetUuid;
         if (playerName == null) {
             targetUuid = ((Player) sender).getUniqueId();
@@ -271,17 +258,91 @@ public class GradientCommand {
         List<String> completions = new ArrayList<>();
         
         if (args.length == 2) {
-            completions.addAll(Arrays.asList("set", "get", "remove"));
-        } else if (args.length == 3 && (args[1].equalsIgnoreCase("set") || args[1].equalsIgnoreCase("get") || args[1].equalsIgnoreCase("remove"))) {
-            completions.addAll(plugin.getConfigManager().getGradients().keySet());
-        } else if (args.length == 4 && args[1].equalsIgnoreCase("set")) {
+            List<String> actions = new ArrayList<>();
+            if (sender.hasPermission("qqcm.gradient.set") || sender.hasPermission("qqcm.gradient.set.other")) {
+                actions.add("set");
+            }
+            if (sender.hasPermission("qqcm.gradient.get") || sender.hasPermission("qqcm.gradient.get.other")) {
+                actions.add("get");
+            }
+            if (sender.hasPermission("qqcm.gradient.remove") || sender.hasPermission("qqcm.gradient.remove.other")) {
+                actions.add("remove");
+            }
+            for (String action : actions) {
+                if (action.startsWith(args[1].toLowerCase())) {
+                    completions.add(action);
+                }
+            }
+            return completions;
+        }
+        
+        if (args.length == 3) {
+            String action = args[1].toLowerCase();
+            if (action.equals("set") || action.equals("get") || action.equals("remove")) {
+                for (String id : plugin.getConfigManager().getGradients().keySet()) {
+                    if (id.toLowerCase().startsWith(args[2].toLowerCase())) {
+                        completions.add(id);
+                    }
+                }
+            }
+            return completions;
+        }
+        
+        if (args.length == 4 && args[1].equalsIgnoreCase("set")) {
             String id = args[2];
             GradientConfig gradient = plugin.getConfigManager().getGradient(id);
             if (gradient != null) {
                 for (int i = 1; i <= gradient.getSlots(); i++) {
-                    completions.add(String.valueOf(i));
+                    if (String.valueOf(i).startsWith(args[3])) {
+                        completions.add(String.valueOf(i));
+                    }
                 }
             }
+            return completions;
+        }
+        
+        if (args.length == 5 && args[1].equalsIgnoreCase("set")) {
+            List<String> colorExamples = Arrays.asList(
+                "#FF5555", "#55FF55", "#5555FF", "#FFFF55", "#FF55FF", "#55FFFF",
+                "#FFFFFF", "#000000", "#FFAA00", "#AA00FF", "&c", "&a", "&6", "red", "blue"
+            );
+            for (String example : colorExamples) {
+                if (example.toLowerCase().startsWith(args[4].toLowerCase())) {
+                    completions.add(example);
+                }
+            }
+            return completions;
+        }
+        
+        if (args.length >= 6 && args[1].equalsIgnoreCase("set")) {
+            boolean hasPlayer = false;
+            for (int i = 5; i < args.length; i++) {
+                if (!args[i].equalsIgnoreCase("-s") && !args[i].isEmpty()) {
+                    hasPlayer = true;
+                    break;
+                }
+            }
+            
+            if (!hasPlayer && sender.hasPermission("qqcm.gradient.set.other")) {
+                for (Player online : Bukkit.getOnlinePlayers()) {
+                    if (online.getName().toLowerCase().startsWith(args[args.length - 1].toLowerCase())) {
+                        completions.add(online.getName());
+                    }
+                }
+            }
+            
+            boolean hasSilent = false;
+            for (String arg : args) {
+                if (arg.equalsIgnoreCase("-s")) {
+                    hasSilent = true;
+                    break;
+                }
+            }
+            if (!hasSilent && "-s".startsWith(args[args.length - 1].toLowerCase())) {
+                completions.add("-s");
+            }
+            
+            return completions;
         }
         
         return completions;
