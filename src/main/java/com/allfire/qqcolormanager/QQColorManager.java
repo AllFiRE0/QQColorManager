@@ -12,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.logging.Level;
 
 public final class QQColorManager extends JavaPlugin {
+    
     private static QQColorManager instance;
     private ConfigManager configManager;
     private ColorStorage storage;
