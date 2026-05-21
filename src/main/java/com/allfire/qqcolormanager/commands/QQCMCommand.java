@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class QQCMCommand implements TabExecutor {
     
@@ -113,18 +112,35 @@ public class QQCMCommand implements TabExecutor {
     }
 
     private void sendHelp(CommandSender sender) {
-        MessageUtil.send(sender, plugin.getConfigManager().getMessage("help_header"));
-        MessageUtil.send(sender, "<gray>/qqcm color set <id> <slot> <color> [player] [-s] - <white>Set color");
-        MessageUtil.send(sender, "<gray>/qqcm color get <id> [player] [-s] - <white>Get color");
-        MessageUtil.send(sender, "<gray>/qqcm color remove <id> <slot> [player] [-s] - <white>Remove color");
-        MessageUtil.send(sender, "<gray>/qqcm gradient set <id> <slot> <color> [player] [-s] - <white>Set gradient");
-        MessageUtil.send(sender, "<gray>/qqcm gradient get <id> [player] [-s] - <white>Get gradient");
-        MessageUtil.send(sender, "<gray>/qqcm gradient remove <id> [player] [-s] - <white>Remove gradient");
-        MessageUtil.send(sender, "<gray>/qqcm info <player> [page] [-s] - <white>Show player info");
-        MessageUtil.send(sender, "<gray>/qqcm clear [player] [-s] - <white>Clear all player data");
-        MessageUtil.send(sender, "<gray>/qqcm list - <white>List templates");
-        MessageUtil.send(sender, "<gray>/qqcm reload - <white>Reload config");
-        MessageUtil.send(sender, "<gray>/qqcm version - <white>Show version");
+        if (!(sender instanceof Player)) {
+            // Консоль — обычный текст без MiniMessage
+            sender.sendMessage("=== QQColorManager Help ===");
+            sender.sendMessage("/qqcm color set <id> <slot> <color> [player] [-s] - Set color");
+            sender.sendMessage("/qqcm color get <id> [player] [-s] - Get color");
+            sender.sendMessage("/qqcm color remove <id> <slot> [player] [-s] - Remove color");
+            sender.sendMessage("/qqcm gradient set <id> <slot> <color> [player] [-s] - Set gradient");
+            sender.sendMessage("/qqcm gradient get <id> [player] [-s] - Get gradient");
+            sender.sendMessage("/qqcm gradient remove <id> [player] [-s] - Remove gradient");
+            sender.sendMessage("/qqcm info <player> [page] [-s] - Show player info");
+            sender.sendMessage("/qqcm clear [player] [-s] - Clear all player data");
+            sender.sendMessage("/qqcm list - List templates");
+            sender.sendMessage("/qqcm reload - Reload config");
+            sender.sendMessage("/qqcm version - Show version");
+        } else {
+            // Игрок — MiniMessage с цветами
+            MessageUtil.send(sender, plugin.getConfigManager().getMessage("help_header"));
+            MessageUtil.send(sender, "<gray>/qqcm color set <id> <slot> <color> [player] [-s] - <white>Set color");
+            MessageUtil.send(sender, "<gray>/qqcm color get <id> [player] [-s] - <white>Get color");
+            MessageUtil.send(sender, "<gray>/qqcm color remove <id> <slot> [player] [-s] - <white>Remove color");
+            MessageUtil.send(sender, "<gray>/qqcm gradient set <id> <slot> <color> [player] [-s] - <white>Set gradient");
+            MessageUtil.send(sender, "<gray>/qqcm gradient get <id> [player] [-s] - <white>Get gradient");
+            MessageUtil.send(sender, "<gray>/qqcm gradient remove <id> [player] [-s] - <white>Remove gradient");
+            MessageUtil.send(sender, "<gray>/qqcm info <player> [page] [-s] - <white>Show player info");
+            MessageUtil.send(sender, "<gray>/qqcm clear [player] [-s] - <white>Clear all player data");
+            MessageUtil.send(sender, "<gray>/qqcm list - <white>List templates");
+            MessageUtil.send(sender, "<gray>/qqcm reload - <white>Reload config");
+            MessageUtil.send(sender, "<gray>/qqcm version - <white>Show version");
+        }
     }
 
     @Override
