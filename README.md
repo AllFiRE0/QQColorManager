@@ -1,5 +1,4 @@
 ```markdown
-<div align="center">
 
 # 🎨 QQColorManager
 
@@ -14,7 +13,6 @@
 [![Release](https://img.shields.io/github/v/release/AllFiRE/QQColorManager?logo=github&logoColor=white)](https://github.com/AllFiRE/QQColorManager/releases)
 [![Downloads](https://img.shields.io/github/downloads/AllFiRE/QQColorManager/total?logo=github&logoColor=white)](https://github.com/AllFiRE/QQColorManager/releases)
 
-</div>
 
 ---
 
