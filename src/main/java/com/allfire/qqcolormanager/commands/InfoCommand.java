@@ -15,6 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class InfoCommand {
+    
     private final QQColorManager plugin;
 
     public InfoCommand(QQColorManager plugin) {
@@ -22,7 +23,6 @@ public class InfoCommand {
     }
 
     public void execute(CommandSender sender, String[] args) {
-        // /qqcm info <player> [page] [-s]
         if (args.length < 2) {
             MessageUtil.send(sender, "<red>Usage: /qqcm info <player> [page] [-s]");
             return;
@@ -42,7 +42,6 @@ public class InfoCommand {
             }
         }
 
-        // Check permissions
         if (!playerName.equalsIgnoreCase(sender.getName()) && !sender.hasPermission("qqcm.info.other")) {
             MessageUtil.send(sender, plugin.getConfigManager().getMessage("no_permission"), silent);
             return;
@@ -53,7 +52,6 @@ public class InfoCommand {
             return;
         }
 
-        // Get target player
         OfflinePlayer target;
         if (Bukkit.getPlayerExact(playerName) != null) {
             target = Bukkit.getPlayerExact(playerName);
@@ -68,7 +66,6 @@ public class InfoCommand {
         UUID targetUuid = target.getUniqueId();
         String displayName = target.getName() != null ? target.getName() : playerName;
 
-        // Get all data
         Map<String, Map<Integer, String>> colors = plugin.getStorage().getAllPlayerColors(targetUuid);
         Map<String, Map<Integer, String>> gradients = plugin.getStorage().getAllPlayerGradients(targetUuid);
 
@@ -77,7 +74,6 @@ public class InfoCommand {
             return;
         }
 
-        // Build lines for pagination
         List<String> lines = new ArrayList<>();
         lines.add("<green>=== QQCM инфо: " + displayName + " ===");
 
@@ -87,11 +83,12 @@ public class InfoCommand {
                 String templateId = entry.getKey();
                 Map<Integer, String> slots = entry.getValue();
                 lines.add("  <white>" + templateId + ":");
-                for (int slot = 1; slot <= 10; slot++) { // Max 10 slots
+                var template = plugin.getConfigManager().getColor(templateId);
+                int maxSlots = template != null ? template.getSlots() : slots.size();
+                for (int slot = 1; slot <= maxSlots; slot++) {
                     if (slots.containsKey(slot)) {
                         lines.add("    <gray>Слот " + slot + ": <white>#" + slots.get(slot));
-                    } else if (plugin.getConfigManager().getColor(templateId) != null && 
-                               slot <= plugin.getConfigManager().getColor(templateId).getSlots()) {
+                    } else {
                         lines.add("    <gray>Слот " + slot + ": <dark_gray>не установлен");
                     }
                 }
@@ -104,18 +101,20 @@ public class InfoCommand {
                 String gradientId = entry.getKey();
                 Map<Integer, String> slots = entry.getValue();
                 lines.add("  <white>" + gradientId + ":");
-                for (int slot = 1; slot <= plugin.getConfigManager().getGradient(gradientId).getSlots(); slot++) {
-                    if (slots.containsKey(slot)) {
-                        lines.add("    <gray>Слот " + slot + ": <white>#" + slots.get(slot));
-                    } else {
-                        String fallback = plugin.getConfigManager().getGradient(gradientId).getFallbackColor(slot);
-                        lines.add("    <gray>Слот " + slot + ": <dark_gray>не установлен <gray>(fallback: #" + fallback + ")");
+                var gradient = plugin.getConfigManager().getGradient(gradientId);
+                if (gradient != null) {
+                    for (int slot = 1; slot <= gradient.getSlots(); slot++) {
+                        if (slots.containsKey(slot)) {
+                            lines.add("    <gray>Слот " + slot + ": <white>#" + slots.get(slot));
+                        } else {
+                            String fallback = gradient.getFallbackColor(slot);
+                            lines.add("    <gray>Слот " + slot + ": <dark_gray>не установлен <gray>(fallback: #" + fallback + ")");
+                        }
                     }
                 }
             }
         }
 
-        // Пагинация (6 строк на страницу, не считая заголовка)
         int linesPerPage = 6;
         int totalPages = (int) Math.ceil((double) (lines.size() - 1) / linesPerPage);
         if (page < 1) page = 1;
@@ -128,19 +127,15 @@ public class InfoCommand {
             MessageUtil.send(sender, lines.get(i));
         }
 
-        if (!silent && totalPages > 0) {
-            sendPaginationButtons(sender, playerName, page, totalPages);
+        if (!silent && totalPages > 0 && sender instanceof Player) {
+            sendPaginationButtons((Player) sender, playerName, page, totalPages);
         }
     }
 
-    private void sendPaginationButtons(CommandSender sender, String playerName, int currentPage, int totalPages) {
-        if (!(sender instanceof Player)) return;
-        
-        Player player = (Player) sender;
+    private void sendPaginationButtons(Player player, String playerName, int currentPage, int totalPages) {
         TextComponent message = new TextComponent();
         
-        // Назад
-        TextComponent back = new TextComponent("[← Назад] ");
+        TextComponent back = new TextComponent("← Назад ");
         if (currentPage > 1) {
             back.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/qqcm info " + playerName + " " + (currentPage - 1)));
             back.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
@@ -150,12 +145,10 @@ public class InfoCommand {
             back.setColor(net.md_5.bungee.api.ChatColor.DARK_GRAY);
         }
         
-        // Страница
         TextComponent page = new TextComponent("Страница: " + currentPage + "/" + totalPages + " ");
         page.setColor(net.md_5.bungee.api.ChatColor.YELLOW);
         
-        // Далее
-        TextComponent next = new TextComponent("[Далее →]");
+        TextComponent next = new TextComponent("Далее →");
         if (currentPage < totalPages) {
             next.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/qqcm info " + playerName + " " + (currentPage + 1)));
             next.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
@@ -174,12 +167,14 @@ public class InfoCommand {
 
     public List<String> tabComplete(CommandSender sender, String[] args) {
         if (args.length == 2) {
-            // Подсказка игроков
             String input = args[1].toLowerCase();
-            return Bukkit.getOnlinePlayers().stream()
-                .map(Player::getName)
-                .filter(name -> name.toLowerCase().startsWith(input))
-                .collect(Collectors.toList());
+            List<String> players = new ArrayList<>();
+            for (Player online : Bukkit.getOnlinePlayers()) {
+                if (online.getName().toLowerCase().startsWith(input)) {
+                    players.add(online.getName());
+                }
+            }
+            return players;
         }
         return new ArrayList<>();
     }
