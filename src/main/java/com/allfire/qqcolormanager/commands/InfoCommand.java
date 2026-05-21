@@ -116,7 +116,7 @@ public class InfoCommand {
         }
 
         int linesPerPage = 6;
-        int totalPages = (int) Math.ceil((double) (lines.size() - 1) / linesPerPage);
+        int totalPages = Math.max(1, (int) Math.ceil((double) (lines.size() - 1) / linesPerPage));
         if (page < 1) page = 1;
         if (page > totalPages && totalPages > 0) page = totalPages;
 
