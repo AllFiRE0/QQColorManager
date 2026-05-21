@@ -32,6 +32,13 @@
     </repositories>
 
     <dependencies>
+        <!-- BukkitAudiences for Adventure -->
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-platform-bukkit</artifactId>
+            <version>4.3.2</version>
+            <scope>compile</scope>
+        </dependency>
         <!-- Paper API 1.21.1+ -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
