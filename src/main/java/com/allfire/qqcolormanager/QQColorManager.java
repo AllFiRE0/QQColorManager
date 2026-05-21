@@ -7,6 +7,7 @@ import com.allfire.qqcolormanager.storage.ColorStorage;
 import com.allfire.qqcolormanager.storage.H2Storage;
 import com.allfire.qqcolormanager.storage.MySQLStorage;
 import com.allfire.qqcolormanager.storage.YAMLStorage;
+import com.allfire.qqcolormanager.util.MessageUtil;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
@@ -22,7 +23,10 @@ public final class QQColorManager extends JavaPlugin {
         instance = this;
         
         saveDefaultConfig();
-
+        
+        // Инициализация MessageUtil
+        MessageUtil.init(this);
+        
         configManager = new ConfigManager(this);
         configManager.load();
         
@@ -47,6 +51,8 @@ public final class QQColorManager extends JavaPlugin {
         if (storage != null) {
             storage.close();
         }
+        // Закрытие MessageUtil
+        MessageUtil.close();
         getLogger().info("QQColorManager disabled");
     }
 
