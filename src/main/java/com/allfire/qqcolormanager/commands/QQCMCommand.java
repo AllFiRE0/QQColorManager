@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class QQCMCommand implements TabExecutor {
+    
     private final QQColorManager plugin;
     private final ColorCommand colorCommand;
     private final GradientCommand gradientCommand;
@@ -128,12 +129,25 @@ public class QQCMCommand implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        List<String> completions = new ArrayList<>();
+        
         if (args.length == 1) {
-            List<String> completions = new ArrayList<>(Arrays.asList(
-                "color", "gradient", "info", "clear", "list", "reload", "version", "help"));
-            return completions.stream().filter(s -> s.startsWith(args[0].toLowerCase())).collect(Collectors.toList());
+            List<String> commands = new ArrayList<>(Arrays.asList(
+                "color", "gradient", "info", "clear", "list", "reload", "version", "help"
+            ));
+            
+            if (!sender.hasPermission("qqcm.reload")) commands.remove("reload");
+            if (!sender.hasPermission("qqcm.list")) commands.remove("list");
+            if (!sender.hasPermission("qqcm.version") && !sender.hasPermission("qqcm.use")) commands.remove("version");
+            
+            for (String cmd : commands) {
+                if (cmd.startsWith(args[0].toLowerCase())) {
+                    completions.add(cmd);
+                }
+            }
+            return completions;
         }
-
+        
         if (args.length >= 2) {
             switch (args[0].toLowerCase()) {
                 case "color":
@@ -146,7 +160,7 @@ public class QQCMCommand implements TabExecutor {
                     return clearCommand.tabComplete(sender, args);
             }
         }
-
-        return new ArrayList<>();
+        
+        return completions;
     }
 }
