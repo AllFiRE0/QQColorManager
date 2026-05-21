@@ -1,0 +1,76 @@
+name: QQColorManager
+version: 1.0.0
+main: com.allfire.qqcolormanager.QQColorManager
+api-version: "1.21"
+author: AllFiRE
+description: Manage colored placeholders for players
+softdepend:
+  - PlaceholderAPI
+
+commands:
+  qqcm:
+    description: Main command for QQColorManager
+    usage: /qqcm <help|list|reload|version|color|gradient|info|clear>
+    aliases: [qqcolormanager, qqcolor]
+
+permissions:
+  qqcm.use:
+    description: Access to basic commands
+    default: true
+  qqcm.color.set:
+    description: Set own color
+    default: true
+  qqcm.color.set.other:
+    description: Set color for others
+    default: op
+  qqcm.color.get:
+    description: Get own color
+    default: true
+  qqcm.color.get.other:
+    description: Get color for others
+    default: op
+  qqcm.color.remove:
+    description: Remove own color
+    default: true
+  qqcm.color.remove.other:
+    description: Remove color for others
+    default: op
+  qqcm.gradient.set:
+    description: Set own gradient color
+    default: true
+  qqcm.gradient.set.other:
+    description: Set gradient color for others
+    default: op
+  qqcm.gradient.get:
+    description: Get own gradient
+    default: true
+  qqcm.gradient.get.other:
+    description: Get gradient for others
+    default: op
+  qqcm.gradient.remove:
+    description: Remove own gradient
+    default: true
+  qqcm.gradient.remove.other:
+    description: Remove gradient for others
+    default: op
+  qqcm.clear:
+    description: Clear own all data
+    default: true
+  qqcm.clear.other:
+    description: Clear all data for others
+    default: op
+  qqcm.info:
+    description: View own info
+    default: true
+  qqcm.info.other:
+    description: View info for others
+    default: op
+  qqcm.list:
+    description: List templates
+    default: op
+  qqcm.reload:
+    description: Reload config
+    default: op
+  qqcm.version:
+    description: View version
+    default: true
