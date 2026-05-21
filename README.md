@@ -1,51 +1,133 @@
 ```markdown
-# QQColorManager
+<div align="center">
+
+# 🎨 QQColorManager
+
+**Управление цветными заполнителями для Minecraft Paper 1.21.1+**
+
+[![Paper](https://img.shields.io/badge/Paper-1.21.1%2B-blue?logo=paper&logoColor=white)](https://papermc.io/)
+[![Java](https://img.shields.io/badge/Java-21%2B-orange?logo=openjdk&logoColor=white)](https://adoptium.net/)
+[![PlaceholderAPI](https://img.shields.io/badge/PlaceholderAPI-2.11.6%2B-green?logo=curseforge&logoColor=white)](https://www.spigotmc.org/resources/placeholderapi.6245/)
+[![License](https://img.shields.io/badge/License-MIT-yellow?logo=opensourceinitiative&logoColor=white)](LICENSE)
 
 [![Build](https://github.com/AllFiRE/QQColorManager/actions/workflows/build.yml/badge.svg)](https://github.com/AllFiRE/QQColorManager/actions/workflows/build.yml)
-[![Version](https://img.shields.io/github/v/release/AllFiRE/QQColorManager)](https://github.com/AllFiRE/QQColorManager/releases)
-[![Paper 1.21](https://img.shields.io/badge/Paper-1.21.1%2B-blue)](https://papermc.io/)
-[![Java 21](https://img.shields.io/badge/Java-21%2B-orange)](https://adoptium.net/)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/AllFiRE/QQColorManager?logo=github&logoColor=white)](https://github.com/AllFiRE/QQColorManager/releases)
+[![Downloads](https://img.shields.io/github/downloads/AllFiRE/QQColorManager/total?logo=github&logoColor=white)](https://github.com/AllFiRE/QQColorManager/releases)
 
-**QQColorManager** — мощный Minecraft плагин для управления цветными заполнителями через PlaceholderAPI. Поддерживает MiniMessage, CMI форматы, градиенты и множество цветовых форматов.
+</div>
 
-## ✨ Особенности
+---
 
-- 🎨 **Гибкие шаблоны** — создавайте неограниченное количество цветовых и градиентных шаблонов
-- 🌈 **Градиенты** — поддержка градиентов с произвольным количеством цветов и fallback-значениями
-- 💾 **Несколько хранилищ** — YAML, H2 (встроенная), MySQL
-- 🔌 **PlaceholderAPI** — полная интеграция с автодополнением заполнителей
-- 🎯 **Умный парсинг** — поддерживает HEX, Vanilla коды, названия цветов, CMI форматы
-- 📋 **Tab Completion** — автодополнение для всех команд и аргументов
-- 📄 **Пагинация** — удобный просмотр информации об игроке
-- 🔒 **Права** — гибкая система разрешений для каждой команды
+## ✨ Features
 
-## 📋 Требования
+| Feature | Description |
+|---------|-------------|
+| 🎨 **Color Templates** | Create unlimited color patterns with multiple slots |
+| 🌈 **Gradients** | Full gradient support with custom fallback colors |
+| 💾 **Multiple Storage** | YAML, H2 (embedded), and MySQL support |
+| 🔌 **PlaceholderAPI** | Full integration with tab completion |
+| 🎯 **Smart Parsing** | Supports HEX, names, Vanilla codes, CMI formats |
+| 📋 **Tab Completion** | Auto-complete for all commands and arguments |
+| 📄 **Pagination** | Paginated player info display |
+| 🔒 **Permissions** | Granular permission system |
 
-- **Сервер**: Paper 1.21.1+
-- **Java**: 21 или выше
-- **Плагины**: PlaceholderAPI (опционально, для заполнителей)
+---
 
-## 📥 Установка
+## 📋 Requirements
 
-1. Скачай последний релиз из [Releases](https://github.com/AllFiRE/QQColorManager/releases)
-2. Помести `QQColorManager-1.0.0.jar` в папку `plugins/`
-3. Перезапусти сервер или выполни `plugman load QQColorManager`
-4. Настрой `config.yml` под свои нужды
-5. Выполни `/qqcm reload`
+- **Server:** Paper 1.21.1 or higher
+- **Java:** 21 or higher
+- **Optional:** PlaceholderAPI (for placeholders)
 
-## ⚙️ Конфигурация
+---
 
-### Базовый `config.yml`
+## 📥 Installation
+
+```bash
+1. Download from Releases
+2. Place JAR in plugins/ folder
+3. Restart server
+4. Configure config.yml
+5. Run /qqcm reload
+```
+
+---
+
+## 🎮 Commands
+
+### Colors
+```bash
+/qqcm color set <id> <slot> <color> [player] [-s]    # Set color
+/qqcm color get <id> [player] [-s]                   # Get color
+/qqcm color remove <id> <slot> [player] [-s]         # Remove color
+```
+
+### Gradients
+```bash
+/qqcm gradient set <id> <slot> <color> [player] [-s]   # Set gradient color
+/qqcm gradient get <id> [player] [-s]                  # Get gradient
+/qqcm gradient remove <id> [player] [-s]               # Remove gradient
+```
+
+### Management
+```bash
+/qqcm info <player> [page] [-s]      # Show player info
+/qqcm clear [player] [-s]            # Clear all player data
+/qqcm list                           # List all templates
+/qqcm reload                         # Reload configuration
+/qqcm version                        # Show version
+```
+
+> **Parameters:** `[player]` - apply to another player | `[-s]` - silent mode | `[page]` - pagination page
+
+---
+
+## 🔌 Placeholders
+
+### Single Colors
+```
+%qqcm_color_<id>_<slot>_<fallback>%
+```
+
+**Example:** `%qqcm_color_nickname_1_&7%`
+
+### Gradients
+```
+%qqcm_gradient_<id>_start_<fallback>%
+%qqcm_gradient_<id>_end_<fallback>%
+```
+
+**Example:** `%qqcm_gradient_grad3_start_&7%Text%qqcm_gradient_grad3_end_&7%`
+
+---
+
+## 🎨 Supported Color Formats
+
+| Format | Example | Result |
+|--------|---------|--------|
+| HEX with # | `#FF5555` | `FF5555` |
+| HEX without # | `FF5555` | `FF5555` |
+| Color name | `red`, `lime` | `FF5555`, `55FF55` |
+| CMI | `{#FF5555}`, `{#lime}` | `FF5555`, `55FF55` |
+| Square brackets | `[#FF5555]`, `[#lime]` | `FF5555`, `55FF55` |
+| Angle brackets | `<FF5555>`, `<lime>` | `FF5555`, `55FF55` |
+| Hash + name | `#lime`, `#hotpink` | `55FF55`, `FF69B4` |
+| Vanilla code | `&c`, `&6` | `FF5555`, `FFAA00` |
+| Vanilla RGB | `&x&F&F&F&F&F&F` | `FFFFFF` |
+| MiniMessage | `<color:#FF5555>` | `FF5555` |
+
+**140+ HTML colors supported:** red, blue, green, yellow, orange, pink, purple, brown, gray, white and all their shades (light, dark, medium, pale, etc.)
+
+---
+
+## ⚙️ Configuration Example
 
 ```yaml
-# Тип базы данных: h2, mysql, yaml
 database:
-  type: h2
+  type: h2  # h2, mysql, yaml
   h2:
     file: data/colors
 
-# Шаблоны цветов
 colors:
   nickname:
     1: "<color:#$1>"
@@ -54,7 +136,6 @@ colors:
     1: "{#$1>}"
     2: "{#$2<}"
 
-# Шаблоны градиентов
 gradients:
   gradient3:
     slots: 3
@@ -66,182 +147,37 @@ gradients:
       3: "FFFFFF"
 ```
 
-## 🎮 Команды
+---
 
-| Команда | Описание | Право |
-|---------|----------|-------|
-| `/qqcm color set <id> <slot> <color> [player] [-s]` | Установить цвет | `qqcm.color.set` |
-| `/qqcm color get <id> [player] [-s]` | Показать цвет | `qqcm.color.get` |
-| `/qqcm color remove <id> <slot> [player] [-s]` | Удалить цвет | `qqcm.color.remove` |
-| `/qqcm gradient set <id> <slot> <color> [player] [-s]` | Установить цвет градиента | `qqcm.gradient.set` |
-| `/qqcm gradient get <id> [player] [-s]` | Показать градиент | `qqcm.gradient.get` |
-| `/qqcm gradient remove <id> [player] [-s]` | Удалить градиент | `qqcm.gradient.remove` |
-| `/qqcm info <player> [page] [-s]` | Информация об игроке | `qqcm.info` |
-| `/qqcm clear [player] [-s]` | Очистить все данные | `qqcm.clear` |
-| `/qqcm list` | Список шаблонов | `qqcm.list` |
-| `/qqcm reload` | Перезагрузить конфиг | `qqcm.reload` |
-| `/qqcm version` | Версия плагина | `qqcm.version` |
-| `/qqcm placeholders` | Список заполнителей | `qqcm.use` |
+## 🔐 Permissions
 
-**Параметры:**
-- `[player]` — для применения команды к другому игроку (требует права `.other`)
-- `[-s]` — silent режим, подавляет вывод сообщений
-- `[page]` — номер страницы для пагинации
+| Permission | Description |
+|------------|-------------|
+| `qqcm.color.set` | Set own color |
+| `qqcm.color.set.other` | Set color for others |
+| `qqcm.gradient.set` | Set own gradient |
+| `qqcm.gradient.set.other` | Set gradient for others |
+| `qqcm.clear` | Clear own data |
+| `qqcm.clear.other` | Clear others data |
+| `qqcm.info` | View own info |
+| `qqcm.info.other` | View others info |
+| `qqcm.reload` | Reload config |
+| `qqcm.list` | List templates |
+| `qqcm.version` | View version |
 
-## 🔌 Заполнители PlaceholderAPI
+---
 
-### Цвета (одиночные)
-```
-%qqcm_color_<id>_<slot>_<fallback>%
-```
-**Пример:** `%qqcm_color_nickname_1_&7%`
+## 💾 Storage Types
 
-### Градиенты
-```
-%qqcm_gradient_<id>_start_<fallback>%
-%qqcm_gradient_<id>_end_<fallback>%
-```
-**Пример:** `%qqcm_gradient_gradient3_start_&7%Текст%qqcm_gradient_gradient3_end_&7%`
+| Type | Best For | Pros | Cons |
+|------|----------|------|------|
+| **H2** | Small to medium servers | Zero config, fast, portable | Single server only |
+| **MySQL** | Large servers, networks | Scalable, multi-server | Requires setup |
+| **YAML** | Testing, tiny servers | Simple, human-readable | Slow for large data |
 
-## 🎨 Поддерживаемые форматы цветов
+---
 
-| Формат | Пример |
-|--------|--------|
-| HEX с # | `#FF5555` |
-| HEX без # | `FF5555` |
-| Название цвета | `red`, `lime`, `hotpink` |
-| CMI | `{#FF5555}`, `{#FF5555>}`, `{#lime}` |
-| Квадратные скобки | `[#FF5555]`, `[#lime]` |
-| Угловые скобки | `<FF5555>`, `<lime>` |
-| Решётка + название | `#lime`, `#hotpink` |
-| Vanilla код | `&c`, `&6`, `&a` |
-| Vanilla RGB | `&x&F&F&F&F&F&F` |
-| MiniMessage | `<color:#FF5555>` |
-
-**140+ HTML цветов:** `red`, `blue`, `green`, `yellow`, `orange`, `pink`, `purple`, `brown`, `gray`, `white` и их оттенки (light, dark, medium, pale и т.д.)
-
-## 🔐 Права
-
-```yaml
-# Цвета
-qqcm.color.set           # Установка цвета себе
-qqcm.color.set.other     # Установка цвета другим
-qqcm.color.get           # Просмотр своего цвета
-qqcm.color.get.other     # Просмотр цвета других
-qqcm.color.remove        # Удаление своего цвета
-qqcm.color.remove.other  # Удаление цвета у других
-
-# Градиенты
-qqcm.gradient.set        # Установка градиента себе
-qqcm.gradient.set.other  # Установка градиента другим
-qqcm.gradient.get        # Просмотр своего градиента
-qqcm.gradient.get.other  # Просмотр градиента других
-qqcm.gradient.remove     # Удаление своего градиента
-qqcm.gradient.remove.other # Удаление градиента у других
-
-# Управление данными
-qqcm.clear               # Очистка своих данных
-qqcm.clear.other         # Очистка данных других
-
-# Информация
-qqcm.info                # Просмотр своей информации
-qqcm.info.other          # Просмотр информации других
-
-# Администрирование
-qqcm.list                # Список шаблонов
-qqcm.reload              # Перезагрузка конфига
-qqcm.version             # Просмотр версии
-qqcm.use                 # Базовый доступ
-```
-
-## 💾 Хранение данных
-
-Поддерживаются три типа хранилищ:
-
-### YAML (для небольших серверов)
-```yaml
-database:
-  type: yaml
-  yaml:
-    file: data.yml
-```
-
-### H2 (рекомендуется)
-```yaml
-database:
-  type: h2
-  h2:
-    file: data/colors
-```
-
-### MySQL (для больших серверов)
-```yaml
-database:
-  type: mysql
-  mysql:
-    host: localhost
-    port: 3306
-    database: qqcolor
-    user: root
-    password: ""
-    pool-size: 10
-```
-
-## 🛠️ Примеры использования
-
-### 1. Простой цвет ника
-```yaml
-# config.yml
-colors:
-  nickname:
-    1: "<color:#$1>"
-```
-```bash
-/qqcm color set nickname 1 #FF5555
-```
-```
-%qqcm_color_nickname_1_&7%%player_name%
-```
-
-### 2. CMI обёртка для чата
-```yaml
-# config.yml
-colors:
-  chat:
-    1: "{#$1>}"
-    2: "{#$2<}"
-```
-```bash
-/qqcm color set chat 1 #FF5555
-/qqcm color set chat 2 #000000
-```
-```
-%qqcm_color_chat_1_&f%%player_name%%qqcm_color_chat_2_&f%
-```
-
-### 3. Градиент в табе
-```yaml
-# config.yml
-gradients:
-  tab_gradient:
-    slots: 3
-    format_start: "<gradient:#$1:#$2:#$3>"
-    format_end: "</gradient>"
-    fallback_colors:
-      1: "FFFFFF"
-      2: "FFFFFF"
-      3: "FFFFFF"
-```
-```bash
-/qqcm gradient set tab_gradient 1 #FF0000
-/qqcm gradient set tab_gradient 2 #00FF00
-/qqcm gradient set tab_gradient 3 #0000FF
-```
-```
-%qqcm_gradient_tab_gradient_start_&7%%player_name%%qqcm_gradient_tab_gradient_end_&7%
-```
-
-## 🏗️ Сборка из исходников
+## 🛠️ Building from Source
 
 ```bash
 git clone https://github.com/AllFiRE/QQColorManager.git
@@ -249,33 +185,67 @@ cd QQColorManager
 mvn clean package
 ```
 
-Готовый JAR находится в `target/QQColorManager-1.0.0.jar`
-
-## 📝 Лицензия
-
-MIT License
-
-## 👤 Автор
-
-**AllFiRE**
-
-- GitHub: [@AllFiRE](https://github.com/AllFiRE)
+Output: `target/QQColorManager-1.0.0.jar`
 
 ---
 
-## ⭐ Поддержка
+## 📝 Examples
 
-Если тебе нравится плагин, поставь звезду на GitHub! Это помогает проекту развиваться. 🚀
+### Colored Nickname
+```yaml
+# config.yml
+colors:
+  nickname:
+    1: "<color:#$1>"
 ```
 
-Этот README содержит:
-- Описание и особенности
-- Требования и установку
-- Полную конфигурацию
-- Все команды с правами
-- Заполнители с примерами
-- Поддерживаемые форматы цветов
-- Типы хранилищ
-- Примеры использования
-- Сборку из исходников
-- Лицензию и контакты
+```bash
+/qqcm color set nickname 1 #FF5555
+```
+
+```
+%qqcm_color_nickname_1_&7%%player_name%
+```
+
+### Gradient Tab Header
+```yaml
+# config.yml
+gradients:
+  tab:
+    slots: 3
+    format_start: "<gradient:#$1:#$2:#$3>"
+    format_end: "</gradient>"
+```
+
+```bash
+/qqcm gradient set tab 1 #FF0000
+/qqcm gradient set tab 2 #00FF00
+/qqcm gradient set tab 3 #0000FF
+```
+
+```
+%qqcm_gradient_tab_start_&7%Welcome%qqcm_gradient_tab_end_&7%
+```
+
+---
+
+## 📄 License
+
+**MIT License** - Free for personal and commercial use.
+
+---
+
+## 👤 Author
+
+**AllFiRE**
+
+[![GitHub](https://img.shields.io/badge/GitHub-AllFiRE-181717?logo=github)](https://github.com/AllFiRE)
+
+---
+
+<div align="center">
+  
+**⭐ Star this repository if you find it useful! ⭐**
+
+</div>
+```
