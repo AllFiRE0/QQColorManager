@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class QQCMExpansion extends PlaceholderExpansion {
+    
     private final QQColorManager plugin;
 
     public QQCMExpansion(QQColorManager plugin) {
@@ -43,9 +44,6 @@ public class QQCMExpansion extends PlaceholderExpansion {
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
         if (player == null) return "";
         
-        // Format: color_<template>_<slot>_<fallback>
-        // Or: gradient_<gradient>_start_<fallback> or gradient_<gradient>_end_<fallback>
-        
         String[] parts = params.split("_", 4);
         
         if (parts.length < 2) return "";
@@ -53,7 +51,6 @@ public class QQCMExpansion extends PlaceholderExpansion {
         String type = parts[0];
         
         if (type.equals("color") && parts.length >= 3) {
-            // color_<template>_<slot>_<fallback>
             String template = parts[1];
             int slot;
             try {
@@ -67,7 +64,6 @@ public class QQCMExpansion extends PlaceholderExpansion {
         }
         
         if (type.equals("gradient") && parts.length >= 3) {
-            // gradient_<gradient>_start_<fallback> or gradient_<gradient>_end_<fallback>
             String gradient = parts[1];
             String part = parts[2];
             String fallback = parts.length >= 4 ? parts[3] : "";
@@ -98,7 +94,6 @@ public class QQCMExpansion extends PlaceholderExpansion {
             return fallback;
         }
         
-        // Replace $1 with hex (without #)
         return format.replace("$1", hex);
     }
     
@@ -110,7 +105,6 @@ public class QQCMExpansion extends PlaceholderExpansion {
         
         UUID uuid = player.getUniqueId();
         
-        // Check if player has any gradient colors set
         boolean hasAnyColor = false;
         Map<Integer, String> colors = new HashMap<>();
         for (int slot = 1; slot <= gradient.getSlots(); slot++) {
@@ -119,7 +113,6 @@ public class QQCMExpansion extends PlaceholderExpansion {
                 hasAnyColor = true;
                 colors.put(slot, color);
             } else {
-                // Use fallback color from config
                 colors.put(slot, gradient.getFallbackColor(slot));
             }
         }
