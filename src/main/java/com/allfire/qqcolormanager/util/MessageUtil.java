@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class MessageUtil {
+    
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
     
     public static void send(CommandSender sender, String message) {
@@ -15,10 +16,12 @@ public class MessageUtil {
         Component component = MINI_MESSAGE.deserialize(message);
         
         if (sender instanceof Player) {
-            ((Player) sender).getAdventure().sendMessage(component);
+            Audience audience = (Audience) sender;
+            audience.sendMessage(component);
         } else {
             // Console doesn't support MiniMessage fully, strip tags
-            sender.sendMessage(message.replaceAll("<[^>]*>", ""));
+            String plainText = message.replaceAll("<[^>]*>", "");
+            sender.sendMessage(plainText);
         }
     }
     
