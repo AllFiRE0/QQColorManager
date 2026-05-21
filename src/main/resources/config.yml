@@ -1,0 +1,82 @@
+# QQColorManager v1.0.0
+# Author: AllFiRE
+
+# Настройки базы данных
+database:
+  type: h2  # h2, mysql, yaml
+  
+  h2:
+    file: data/colors
+  
+  mysql:
+    host: localhost
+    port: 3306
+    database: qqcolor
+    user: root
+    password: ""
+    pool-size: 10
+    use-ssl: false
+  
+  yaml:
+    file: data.yml
+
+# Цвета
+colors:
+  chatmessage:
+    1: "{#$1>}"
+    2: "{#$2<}"
+    input_regex: "^#?[A-Fa-f0-9]{6}$"
+  nickname:
+    1: "<color:#$1>"
+    input_regex: "^#?[A-Fa-f0-9]{6}$"
+  tab_color:
+    1: "&$1"
+    input_regex: "^[0-9a-f]$"
+
+# Градиенты
+gradients:
+  grad3:
+    slots: 3
+    format_start: "<gradient:#$1:#$2:#$3>"
+    format_end: "</gradient>"
+    fallback_colors:
+      1: "FFFFFF"
+      2: "FFFFFF"
+      3: "FFFFFF"
+    input_regex: "^#?[A-Fa-f0-9]{6}$"
+  grad5:
+    slots: 5
+    format_start: "<gradient:#$1:#$2:#$3:#$4:#$5>"
+    format_end: "</gradient>"
+    fallback_colors:
+      1: "FFFFFF"
+      2: "FFFFFF"
+      3: "FFFFFF"
+      4: "FFFFFF"
+      5: "FFFFFF"
+    input_regex: "^#?[A-Fa-f0-9]{6}$"
+
+# Сообщения (MiniMessage формат)
+messages:
+  prefix: "<dark_gray>[<green>QQCM<dark_gray>]"
+  color_set: "<green>Цвет установлен: <white><color>"
+  color_updated: "<green>Цвет обновлён: <white><old_color> → <new_color>"
+  color_get: "<green>Текущий цвет: <white><color>"
+  color_removed: "<green>Цвет удалён: <white><template> слот <slot>"
+  gradient_set: "<green>Цвет градиента (слот <slot>) установлен: <white><color>"
+  gradient_get: "<green>Цвета градиента:"
+  gradient_removed: "<green>Градиент удалён: <white><gradient>"
+  player_cleared: "<green>Все данные игрока <white><player> <green>очищены"
+  nothing_to_remove: "<yellow>Нечего удалять — цвет не установлен"
+  nothing_to_clear: "<yellow>У игрока нет данных для очистки"
+  invalid_color: "<red>Неверный формат цвета! Примеры: FFFFFF, #FF5555, &c, red"
+  invalid_regex: "<red>Цвет не соответствует формату! Ожидается: <regex>"
+  player_not_found: "<red>Игрок не найден!"
+  template_not_found: "<red>Шаблон не найден!"
+  slot_not_found: "<red>Слот не найден!"
+  no_colors: "<yellow>У игрока нет установленных цветов"
+  reloaded: "<green>Конфиг перезагружен"
+  help_header: "<green>=== QQColorManager Help ==="
+  help_line: "<gray>/qqcm <command> - <description>"
+  unknown_command: "<red>Неизвестная команда. Используйте /qqcm help"
+  no_permission: "<red>У вас нет прав на выполнение этой команды"
