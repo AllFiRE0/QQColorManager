@@ -51,7 +51,6 @@ public class QQCMExpansion extends PlaceholderExpansion {
     public @Nullable List<String> getPlaceholders() {
         List<String> placeholders = new ArrayList<>();
         
-        // Цвета
         for (String id : plugin.getConfigManager().getColors().keySet()) {
             TemplateConfig template = plugin.getConfigManager().getColor(id);
             if (template != null) {
@@ -63,7 +62,6 @@ public class QQCMExpansion extends PlaceholderExpansion {
             }
         }
         
-        // Градиенты
         for (String id : plugin.getConfigManager().getGradients().keySet()) {
             placeholders.add("%qqcm_gradient_" + id + "_start_fallback%");
             placeholders.add("%qqcm_gradient_" + id + "_start_&7%");
@@ -141,13 +139,44 @@ public class QQCMExpansion extends PlaceholderExpansion {
         
         boolean hasAnyColor = false;
         Map<Integer, String> colors = new HashMap<>();
+        
+        // Сначала собираем все установленные цвета
         for (int slot = 1; slot <= gradient.getSlots(); slot++) {
             String color = plugin.getStorage().getGradientColor(uuid, gradientId, slot);
             if (color != null) {
                 hasAnyColor = true;
                 colors.put(slot, color);
-            } else {
-                colors.put(slot, gradient.getFallbackColor(slot));
+            }
+        }
+        
+        // Затем заполняем пустые слоты fallback цветами с поддержкой $1
+        for (int slot = 1; slot <= gradient.getSlots(); slot++) {
+            if (!colors.containsKey(slot)) {
+                String fallbackColor = gradient.getFallbackColor(slot);
+                
+                // Обработка динамического fallback: $1, $2 и т.д.
+                if (fallbackColor != null && fallbackColor.startsWith("$") && fallbackColor.length() > 1) {
+                    try {
+                        int refSlot = Integer.parseInt(fallbackColor.substring(1));
+                        if (colors.containsKey(refSlot)) {
+                            fallbackColor = colors.get(refSlot);
+                        } else {
+                            // Если ссылается на пустой слот, берём его fallback
+                            fallbackColor = gradient.getFallbackColor(refSlot);
+                            if (fallbackColor != null && fallbackColor.startsWith("$")) {
+                                fallbackColor = "FFFFFF";
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+                        fallbackColor = "FFFFFF";
+                    }
+                }
+                
+                if (fallbackColor == null || fallbackColor.isEmpty()) {
+                    fallbackColor = "FFFFFF";
+                }
+                
+                colors.put(slot, fallbackColor);
             }
         }
         
@@ -159,12 +188,22 @@ public class QQCMExpansion extends PlaceholderExpansion {
             String format = gradient.getFormatStart();
             for (int slot = 1; slot <= gradient.getSlots(); slot++) {
                 String color = colors.get(slot);
-                format = format.replace("$" + slot, color);
-                format = format.replace("#$" + slot, "#" + color);
+                if (color != null) {
+                    format = format.replace("$" + slot, color);
+                    format = format.replace("#$" + slot, "#" + color);
+                }
             }
             return format;
         } else if (part.equalsIgnoreCase("end") || part.equalsIgnoreCase("2")) {
-            return gradient.getFormatEnd();
+            String format = gradient.getFormatEnd();
+            for (int slot = 1; slot <= gradient.getSlots(); slot++) {
+                String color = colors.get(slot);
+                if (color != null) {
+                    format = format.replace("$" + slot, color);
+                    format = format.replace("#$" + slot, "#" + color);
+                }
+            }
+            return format;
         }
         
         return fallback;
