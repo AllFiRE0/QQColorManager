@@ -2,6 +2,7 @@ package com.allfire.qqcolormanager.placeholder;
 
 import com.allfire.qqcolormanager.QQColorManager;
 import com.allfire.qqcolormanager.config.GradientConfig;
+import com.allfire.qqcolormanager.config.RelationConfig;
 import com.allfire.qqcolormanager.config.TemplateConfig;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
@@ -134,7 +135,7 @@ public class QQCMExpansion extends PlaceholderExpansion {
             String fallback = parts.length >= 4 ? parts[3] : "";
             
             if (isRel) {
-                return getRelColorPlaceholder(player, template, slot, fallback, params);
+                return getRelColorPlaceholder(player, template, slot, fallback);
             }
             return getColorPlaceholder(player, template, slot, fallback);
         }
@@ -145,7 +146,7 @@ public class QQCMExpansion extends PlaceholderExpansion {
             String fallback = parts.length >= 4 ? parts[3] : "";
             
             if (isRel) {
-                return getRelGradientPlaceholder(player, gradient, part, fallback, params);
+                return getRelGradientPlaceholder(player, gradient, part, fallback);
             }
             return getGradientPlaceholder(player, gradient, part, fallback);
         }
@@ -224,11 +225,11 @@ public class QQCMExpansion extends PlaceholderExpansion {
         return fallback;
     }
     
-    private String getRelColorPlaceholder(Player player, String templateId, int slot, String fallback, String fullParam) {
-        // Определяем, в каком порядке обрабатывать: TARGET_AND_SENDER или SENDER_AND_TARGET
-        String mode = plugin.getConfig().getString("relation.mode", "TARGET_AND_SENDER");
+    private String getRelColorPlaceholder(Player player, String templateId, int slot, String fallback) {
+        // Определяем, в каком порядке обрабатывать
+        RelationConfig.RelationMode mode = plugin.getConfigManager().getRelationConfig().getMode();
         
-        Player target = getTarget(player, fullParam);
+        Player target = getTarget(player);
         if (target == null) {
             return fallback;
         }
@@ -237,7 +238,7 @@ public class QQCMExpansion extends PlaceholderExpansion {
         Player firstPlayer;
         Player secondPlayer;
         
-        if (mode.equalsIgnoreCase("TARGET_AND_SENDER")) {
+        if (mode == RelationConfig.RelationMode.TARGET_AND_SENDER) {
             firstPlayer = target;
             secondPlayer = sender;
         } else { // SENDER_AND_TARGET
@@ -267,14 +268,13 @@ public class QQCMExpansion extends PlaceholderExpansion {
         }
         
         // Для реляционных заполнителей возвращаем цвет первого игрока
-        // (или комбинацию, в зависимости от необходимости)
         return format.replace("$1", hex1);
     }
     
-    private String getRelGradientPlaceholder(Player player, String gradientId, String part, String fallback, String fullParam) {
-        String mode = plugin.getConfig().getString("relation.mode", "TARGET_AND_SENDER");
+    private String getRelGradientPlaceholder(Player player, String gradientId, String part, String fallback) {
+        RelationConfig.RelationMode mode = plugin.getConfigManager().getRelationConfig().getMode();
         
-        Player target = getTarget(player, fullParam);
+        Player target = getTarget(player);
         if (target == null) {
             return fallback;
         }
@@ -283,7 +283,7 @@ public class QQCMExpansion extends PlaceholderExpansion {
         Player firstPlayer;
         Player secondPlayer;
         
-        if (mode.equalsIgnoreCase("TARGET_AND_SENDER")) {
+        if (mode == RelationConfig.RelationMode.TARGET_AND_SENDER) {
             firstPlayer = target;
             secondPlayer = sender;
         } else { // SENDER_AND_TARGET
@@ -394,13 +394,11 @@ public class QQCMExpansion extends PlaceholderExpansion {
         return colors;
     }
     
-    private Player getTarget(Player player, String fullParam) {
+    private Player getTarget(Player player) {
         // Пытаемся получить цель из контекста PlaceholderAPI
-        // Если используется реляционный заполнитель, цель должна быть передана через API
+        // В реальном использовании цель передается через PlaceholderAPI реляционный API
         
-        // Для простоты используем первого онлайн игрока, если цель не указана
-        // В реальном плагине нужно использовать PlaceholderAPI реляционные методы
-        // или парсить цель из параметра
+        // Для демонстрации - берем первого онлайн игрока, не равного отправителю
         Player[] online = Bukkit.getOnlinePlayers().toArray(new Player[0]);
         for (Player p : online) {
             if (!p.equals(player)) {
