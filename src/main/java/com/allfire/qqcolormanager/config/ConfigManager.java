@@ -13,17 +13,22 @@ public class ConfigManager {
     private Map<String, TemplateConfig> colors;
     private Map<String, GradientConfig> gradients;
     private Map<String, String> messages;
+    private RelationConfig relationConfig;
 
     public ConfigManager(QQColorManager plugin) {
         this.plugin = plugin;
         this.colors = new HashMap<>();
         this.gradients = new HashMap<>();
         this.messages = new HashMap<>();
+        this.relationConfig = new RelationConfig();
     }
 
     public void load() {
         plugin.reloadConfig();
         FileConfiguration config = plugin.getConfig();
+        
+        // Load relation config
+        loadRelationConfig(config);
         
         // Load colors
         colors.clear();
@@ -53,6 +58,16 @@ public class ConfigManager {
         }
     }
     
+    private void loadRelationConfig(FileConfiguration config) {
+        ConfigurationSection relationSection = config.getConfigurationSection("relation");
+        if (relationSection != null) {
+            String mode = relationSection.getString("mode", "TARGET_AND_SENDER");
+            relationConfig.setMode(mode);
+        } else {
+            relationConfig.setMode("TARGET_AND_SENDER");
+        }
+    }
+    
     public void reload() {
         load();
     }
@@ -75,5 +90,9 @@ public class ConfigManager {
     
     public String getMessage(String key) {
         return messages.getOrDefault(key, "<red>Message not found: " + key);
+    }
+    
+    public RelationConfig getRelationConfig() {
+        return relationConfig;
     }
 }
