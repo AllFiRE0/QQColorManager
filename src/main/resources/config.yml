@@ -1,6 +1,12 @@
 # QQColorManager v1.0.0
 # Author: AllFiRE
 
+# Настройки реляционных заполнителей
+relation:
+  mode: TARGET_AND_SENDER  # TARGET_AND_SENDER или SENDER_AND_TARGET
+  # TARGET_AND_SENDER: цвет цели (первый игрок) и отправителя (второй игрок)
+  # SENDER_AND_TARGET: цвет отправителя (первый игрок) и цели (второй игрок)
+
 # Настройки базы данных
 database:
   type: h2  # h2, mysql, yaml
